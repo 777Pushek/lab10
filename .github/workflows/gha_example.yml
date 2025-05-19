@@ -48,6 +48,7 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
+          load: true
           outputs: type=docker
           cache-from: |
             type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache
@@ -69,6 +70,7 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/arm64
+          load: true
           outputs: type=docker
           cache-from: |
             type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache
