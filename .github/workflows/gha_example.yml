@@ -42,12 +42,33 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build Docker image
+      - name: Build Docker image for amd64
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
+          outputs: type=docker
+          cache-from: |
+            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example-cache:buildcache
+          cache-to: |
+            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example-cache:buildcache,mode=max
+          tags: ${{ steps.meta.outputs.tags }}
+
+      - name: Scan Docker image (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ vars.DOCKERHUB_USERNAME }}/example:latest
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Build Docker image for arm64
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/arm64
           outputs: type=docker
           cache-from: |
             type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example-cache:buildcache
