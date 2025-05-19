@@ -1,0 +1,12 @@
+a. Zbudowanie obrazu kontenera
+docker build -t pogoda-app .
+b. Uruchomienie kontenera
+docker run -d --name pogoda-kontener -p 3000:3000 --env-file .env pogoda-app
+c. Odczyt logów aplikacji
+docker logs pogoda-kontener
+d. liczba warstw:
+docker history pogoda-app
+
+
+docker buildx build -f Dockerfile --platform linux/amd64,linux/arm64 --sbom --provenance=mod=max -t docker.io/777pushek/labchmura:pogoda2 --cache-to type=inline --cache-from type=registry,ref=docker.io/777pushek/labchmura:pogoda2 --push .
+
