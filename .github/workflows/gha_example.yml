@@ -57,7 +57,7 @@ jobs:
           cache-to: |
             type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example:cache  
           tags: ${{ steps.meta.outputs.tags }}
-            - 
+      - 
         name: Scan Docker image for vulnerabilities
         uses: aquasecurity/trivy-action@master
         with:
