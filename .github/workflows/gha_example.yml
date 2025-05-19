@@ -21,7 +21,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ vars.DOCKERHUB_USERNAME }}/example
+          images: ${{ vars.DOCKERHUB_USERNAME }}/lab10mk
           flavor: latest=false
           tags: |
             type=sha,priority=100,prefix=sha-,format=short
@@ -50,15 +50,15 @@ jobs:
           platforms: linux/amd64
           outputs: type=docker
           cache-from: |
-            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example-cache:buildcache
+            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache
           cache-to: |
-            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example-cache:buildcache,mode=max
+            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache,mode=max
           tags: ${{ steps.meta.outputs.tags }}
 
       - name: Scan Docker image (Trivy)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ vars.DOCKERHUB_USERNAME }}/example:latest
+          image-ref: ${{ vars.DOCKERHUB_USERNAME }}/lab10mk:latest
           format: 'table'
           exit-code: '1'
           severity: 'CRITICAL,HIGH'
@@ -71,15 +71,15 @@ jobs:
           platforms: linux/arm64
           outputs: type=docker
           cache-from: |
-            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example-cache:buildcache
+            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache
           cache-to: |
-            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example-cache:buildcache,mode=max
+            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache,mode=max
           tags: ${{ steps.meta.outputs.tags }}
 
       - name: Scan Docker image (Trivy)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ vars.DOCKERHUB_USERNAME }}/example:latest
+          image-ref: ${{ vars.DOCKERHUB_USERNAME }}/lab10mk:latest
           format: 'table'
           exit-code: '1'
           severity: 'CRITICAL,HIGH'
@@ -93,7 +93,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           cache-from: |
-            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example-cache:buildcache
+            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache
           cache-to: |
-            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example-cache:buildcache,mode=max
+            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache,mode=max
           tags: ${{ steps.meta.outputs.tags }}
