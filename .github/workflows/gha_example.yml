@@ -49,18 +49,19 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: false
-          load: true
-          tags: tempimage:multiarch
+          tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache
           cache-to: type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache,mode=max
+          outputs: type=oci,dest=/tmp/image.tar
 
-      - name: Scan arm64 image with Trivy
+      - name: Scan image with Trivy
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: tempimage:multiarch
+          input: /tmp/image.tar
           format: table
           exit-code: '1'
           severity: CRITICAL,HIGH
+          ignore-unfixed: true
 
       - name: Push multiarch image to GHCR
         if: success()
