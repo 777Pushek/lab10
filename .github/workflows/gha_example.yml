@@ -49,6 +49,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: false
+          load: true
           tags: tempimage:multiarch
           cache-from: type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache
           cache-to: type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache,mode=max
