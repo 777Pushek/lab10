@@ -42,45 +42,26 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build amd64 image
+      - name: Build and cache multiarch image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64
-          load: true
-          tags: tempimage:amd64
+          platforms: linux/amd64,linux/arm64
+          push: false
+          tags: tempimage:multiarch
           cache-from: type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache
           cache-to: type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache,mode=max
 
-      - name: Build arm64 image
-        uses: docker/build-push-action@v5
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@v0
         with:
-          context: .
-          file: ./Dockerfile
-          platforms: linux/arm64
-          load: true
-          tags: tempimage:arm64
-          cache-from: type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache
-          cache-to: type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/lab10mk-cache:buildcache,mode=max
-
-      - name: Scan amd64 image with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: tempimage:amd64
+          image-ref: tempimage:multiarch
           format: table
           exit-code: '1'
           severity: CRITICAL,HIGH
 
-      - name: Scan arm64 image with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: tempimage:arm64
-          format: table
-          exit-code: '1'
-          severity: CRITICAL,HIGH
-
-      - name: Push multi-arch image to GHCR
+      - name: Push multiarch image to GHCR
         if: success()
         uses: docker/build-push-action@v5
         with:
